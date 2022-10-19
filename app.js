@@ -25,8 +25,10 @@ const port = 3000;
 // }
 // util.inherits(User, events);
 //
-// let emitter = new events();
-// let event_name = "greeting";
+let emitter = new events();
+let event_create = "create";
+let event_change = "change";
+
 //
 // User.prototype.sayHi = function (data){
 //     this.emit(event_name, data);
@@ -53,35 +55,39 @@ const port = 3000;
 
 // emitter.emit(event_name, "МИр");
 
-//emitter.on(event_name, () => {
-    fs.appendFile(file, `${date_my}`, function (success, error) {
-        if(success){
+emitter.on(event_create, () => {
+    if (file !== undefined) {
+        fs.appendFile(file, `${date_my}`, function (error) {
+            if (error) throw error;
             console.log("Запись файла завершена. Содержимое файла: " + file);
             let data = fs.readFileSync(file, "utf8"); //todo первое задание на запись в файл
             function say_hi() { //выводим через функцию
+                mailer.emitter.emit("send_mailer");
                 console.log(data);  // выводим считанные данные
             }
 
             say_hi();
-            // setTimeout(say_hi, 5000);
-            // fs.rename(file, 'login.txt', err => {
-            //     if (err) throw err; // не удалось переименовать файл
-            //     console.log('Файл успешно переименован');
-            // })
-        }
-        else if (error) throw error; // если возникла ошибка
-    });
-//});
+            setTimeout(say_hi, 5000);
+           //fs.rename(file, 'login.txt', err => {
+                //if (err) throw err; // не удалось переименовать файл
+               // console.log('Файл успешно переименован');
+            //})
 
-// emitter.on(event_name, () => {
-//     fs.rename(file, 'login.txt', err => {
-//         if (err) throw err; // не удалось переименовать файл
-//         console.log('Файл успешно переименован');
-//     })
-// });
+            emitter.emit(event_change);
+        });
+    }
+
+});
+
+emitter.on(event_change, () => {
+    fs.rename(file, 'login.txt', err => {
+        if (err) throw err; // не удалось переименовать файл
+        console.log('Файл успешно переименован');
+    })
+});
 
 
-//emitter.emit(event_name);
+emitter.emit(event_create);
 
 // const server = http.createServer((req, res) => {
 //     res.statusCode = 200;

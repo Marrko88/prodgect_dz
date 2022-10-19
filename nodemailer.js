@@ -1,27 +1,34 @@
 const nodemailer = require('nodemailer');
+const events = require("events");
 
 const transporter = nodemailer.createTransport(
     {
-        host: 'smtp.ethereal.email',
-        port: 587,
-        secure: false, // 465
+        host: 'smtp.mail.ru',
+        port: 465,
+        tls: {
+            secure: true,
+
+        },
+        secure: true, // 465
         auth: {
-            user: 'dewayne.oconner61@ethereal.email',
-            pass: '4RJAm64cktaAtKY3CT'
+            user: 'markianec@mail.ru',
+            pass: 'hJnCskJTk3Pz2ngex49A'
         }
     }
 );
 
+let emitter = new events();
+let name_sendmailer = "send_mailer";
 
-const mailer = transporter.sendMail({
-    from: '"Node js" <dewayne.oconner61@ethereal.email>',
-    to: 'markianec@mail.ru',
-    subject: 'Message from Node js',
-    text: 'This message was sent from Node js server.',
-    html:
-        'This <i>message</i> was sent from <strong>Node js</strong> server.',
-})
+emitter.on(name_sendmailer, ()=> {
+    const mailer = transporter.sendMail({
+        from: '"Node js" <markianec@mail.ru>',
+        to: 'oulina@mail.ru',
+        subject: 'Message from Node js',
+        text: 'This message was sent from Node js server.',
+        html:
+            'This <i>message</i> was sent from <strong>Node js</strong> server.',
+    })
+});
 
-console.log(mailer);
-
-// module.exports = mailer;
+module.exports.emitter = emitter;
